@@ -55,18 +55,31 @@ class Timer:
         future = executor.submit(self.task, seconds_to_wait)
         future.add_done_callback(self.timer_ended)
 
+    def notify(self):
+        duration = int((self.end - self.start).total_seconds())
+
+        subprocess.run([
+            "notify-send",
+            f"{self.name}",
+            f"Finished\nDuration: {timedelta(seconds=duration)}",
+            "-u", "normal",
+            "-t", "5000"
+        ])
+
+        # subprocess.run([
+        #     "spd-say",
+        #     f"Timer {self.name} finished. "
+        #     f"Duration {duration // 60} minutes {duration % 60} seconds."
+        # ])
+
+
     def timer_ended(self, future):
         try:
             completed = future.result()
             if completed:
                 self.ended = True
-
-                subprocess.run([
-                    "notify-send",
-                    f"{self.name}",
-                    "Timer finished!"
-                ])
-
+                self.notify()
+                
             else:
                 self.timer_cancelled = True
                 return
@@ -275,7 +288,7 @@ def print_info(timers):
         for name, time_data in timers_data.items():
             h, m, s = time_data
             print(f"{WHITE}{BOLD}{name} -{RESET} {WHITE}{UNDERLINE}{h}h{m}m{s}s{RESET}")
-        time.sleep(1)
+        time.sleep(2)
 
 
 def handle_ctrl_z(signum, frame):
