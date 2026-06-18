@@ -23,6 +23,8 @@ Instead of suspending the program, Ctrl+Z acts as a UI signal. One keystroke tog
 ## Requirements
 
 * Python 3
+
+# Optional Requirements
 * `notify-send`
 * `spd-say`
 
