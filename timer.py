@@ -35,7 +35,7 @@ GREEN = "\033[32m"
 MAGENTA = "\033[35m"
 CYAN = "\033[36m"
 WHITE = "\033[37m"
-YELLOW = "\033[33m"                                                                                                                                     
+YELLOW = "\033[33m"
 
 # Styles
 BOLD = "\033[1m"
@@ -266,14 +266,12 @@ def sisyphus_update(timers):
     # ENDED
     # RUNNING
 
-
     for timer in timers.values():
         if timer.name == "sisyphus" and not timer.timer_cancelled:
-            if timer.ended: 
+            if timer.ended:
                 ended.append(timer)
             else:
                 runnings.append(timer)
-            
 
     if len(runnings) == 0 and len(ended) == 0:
         start_timer(timers, "sisyphus")
@@ -289,7 +287,7 @@ def sisyphus_update(timers):
             f"{GREEN}{BOLD}The boulder rolls again.{RESET} "
             f"Sisyphus count increased to "
             f"{WHITE}{UNDERLINE}{sisyphus_count}{RESET}."
-        )    
+        )
     elif len(runnings) >= 1:
         for running in runnings:
             running.die()
@@ -340,7 +338,7 @@ ops = {
     "stop": (stop_timer, 1),
     "save": (save_timers, 0),
     "quote": (random_quote, 0),
-    "sisyphus": (sisyphus_update, 0)
+    "sisyphus": (sisyphus_update, 0),
 }
 
 
