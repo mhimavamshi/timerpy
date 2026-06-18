@@ -23,6 +23,8 @@ DEFAULTFILE = "./timers.json"
 Path(DEFAULTFILE).touch()
 timers_data = {}
 
+sisyphus_count = 0
+
 # Reset
 RESET = "\033[0m"
 
@@ -33,6 +35,7 @@ GREEN = "\033[32m"
 MAGENTA = "\033[35m"
 CYAN = "\033[36m"
 WHITE = "\033[37m"
+YELLOW = "\033[33m"
 
 # Styles
 BOLD = "\033[1m"
@@ -247,6 +250,55 @@ def random_quote(timers):
     return f'Here is a quote: "{WHITE}{UNDERLINE}{BOLD}{random.choice(quote_bag)}{RESET}" :P'
 
 
+def sisyphus_update(timers):
+    """
+    Simulates the human condition.
+    """
+    global sisyphus_count
+
+    runnings = []
+    ended = []
+
+    # CANCELLED
+    # ENDED
+    # RUNNING
+
+
+    for timer in timers.values():
+        if timer.name == "sisyphus" and not timer.timer_cancelled:
+            if timer.ended: 
+                ended.append(timer)
+            else:
+                runnings.append(timer)
+            
+
+    if len(runnings) == 0 and len(ended) == 0:
+        start_timer(timers, "sisyphus")
+        return (
+            f"{CYAN}{BOLD}The boulder begins its journey.{RESET} "
+            f"(count: {WHITE}{UNDERLINE}{sisyphus_count}{RESET})"
+        )
+
+    if len(runnings) == 0 and len(ended) >= 1:
+        sisyphus_count += 1
+        start_timer(timers, "sisyphus")
+        return (
+            f"{GREEN}{BOLD}The boulder rolls again.{RESET} "
+            f"Sisyphus count increased to "
+            f"{WHITE}{UNDERLINE}{sisyphus_count}{RESET}."
+        )    
+    elif len(runnings) >= 1:
+        for running in runnings:
+            running.die()
+        sisyphus_count = 0
+
+        return (
+            f"{RED}{BOLD}You pushed too soon. The gods are displeased. Giving up? OR Live absurdly again?{RESET} "
+            f"Sisyphus count reset to "
+            f"{WHITE}{UNDERLINE}{sisyphus_count}{RESET}."
+        )
+
+
 def help(timers):
     """
     Provides command help for usage
@@ -285,6 +337,7 @@ ops = {
     "stop": (stop_timer, 1),
     "save": (save_timers, 0),
     "quote": (random_quote, 0),
+    "sisyphus": (sisyphus_update, 0)
 }
 
 
@@ -344,6 +397,10 @@ def print_info(timers):
     while True:
         clear_screen()
         print(f"{CYAN}{ITALIC}mode{RESET}: {mode}")
+        print(
+            f"{YELLOW}{BOLD}Sisyphus Count:{RESET} "
+            f"{YELLOW}{UNDERLINE}{sisyphus_count}{RESET}"
+        )
         print(f"{WHITE}{DIM}TIME NOW - {datetime.now().strftime('%I:%M:%S %p')}{RESET}")
         for timer_id, timer in timers.items():
             print(
@@ -372,6 +429,8 @@ def load_timers():
         global timers_data
         with open(DEFAULTFILE) as fl:
             timers_data = json.load(fl)
+        if "sisyphus" not in timers_data:
+            timers_data["sisyphus"] = [0, 1, 0]
     except:
         return
 
