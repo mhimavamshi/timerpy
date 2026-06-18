@@ -25,7 +25,7 @@ Instead of suspending the program, Ctrl+Z acts as a UI signal. One keystroke tog
 
 * Python 3
 
-# Optional Requirements
+## Optional Requirements
 * `notify-send`
 * `spd-say`
 
