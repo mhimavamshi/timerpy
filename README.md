@@ -18,7 +18,7 @@ Press **Ctrl+Z** to instantly switch between:
 * **Input Mode** → enter commands
 * **Timer Mode** → live dashboard showing all running timers
 
-Instead of suspending the program, Ctrl+Z acts as a UI signal. One keystroke toggles between command entry and monitoring. I was too lazy for ANSI Codes or Raw Mode in terminal and all that jazz. Also I didn't want to use third party libraries. This is the quickest way I found.
+Instead of suspending the program, Ctrl+Z acts as a UI signal. One keystroke toggles between command entry and monitoring. I was too lazy for ANSI Codes or Raw Mode in terminal and all that jazz. Also I didn't want to use third party libraries. This is the quickest way I thought of.
 
 ## Requirements
 
