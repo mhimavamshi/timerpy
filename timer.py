@@ -73,11 +73,13 @@ class Timer:
             ]
         )
 
-        # subprocess.run([
-        #     "spd-say",
-        #     f"Timer {self.name} finished. "
-        #     f"Duration {duration // 60} minutes {duration % 60} seconds."
-        # ])
+        subprocess.run(
+            [
+                "spd-say",
+                f"Timer {self.name} finished. "
+                f"Duration {duration // 60} minutes {duration % 60} seconds.",
+            ]
+        )
 
     def timer_ended(self, future):
         try:
@@ -211,7 +213,7 @@ def save_timers(timers):
 
 def clear_timer(timers, n):
     """
-    Removes a timer identified by index as argument                     
+    Removes a timer identified by index as argument
     """
     n = int(n)
 
@@ -267,8 +269,10 @@ ops = {
 def init_screen():
     print("\033[s", end="")  # save cursor position
 
+
 def clear_screen():
     print("\033[u\033[J", end="")  # restore cursor + clear to end of screen
+
 
 # def clear_screen():
 #     print("\033[2J\033[H", end="")
