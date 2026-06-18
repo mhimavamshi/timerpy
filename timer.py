@@ -170,7 +170,7 @@ def start_timer(timers, name):
     timer = Timer(end=end_time, start=now, n=next_id, name=name)
     timers[timer.id] = timer
 
-    return f"{GREEN}Timer with name{RESET} {WHITE}{UNDERLINE}{name}{RESET} {GREEN}started{RESET}"
+    return f"{GREEN}Timer with name{RESET} {WHITE}{UNDERLINE}{name}{RESET} {GREEN}started with id #{next_id}{RESET}"
 
 
 def stop_timer(timers, inp):
@@ -264,8 +264,14 @@ ops = {
 }
 
 
+def init_screen():
+    print("\033[s", end="")  # save cursor position
+
 def clear_screen():
-    print("\033[2J\033[H", end="")
+    print("\033[u\033[J", end="")  # restore cursor + clear to end of screen
+
+# def clear_screen():
+#     print("\033[2J\033[H", end="")
 
 
 def execute_command(cmd, timers):
@@ -351,6 +357,7 @@ def main():
 
     load_timers()
 
+    init_screen()
     clear_screen()
 
     cmd_history = []
