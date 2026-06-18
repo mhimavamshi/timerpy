@@ -8,6 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Event
 import json
 from pathlib import Path
+import random
+
 
 import re
 
@@ -226,6 +228,25 @@ def clear_timer(timers, n):
     return f"{GREEN}Removed timer #{n}{RESET}"
 
 
+def random_quote(timers):
+    """
+    Gives you a very important quote back
+    """
+    quote_bag = [
+        "A scientist is someone who knows more and more about less and less, until he knows everything about nothing. — Konrad Lorenz",
+        "The creation of unpredictable numbers is considered too critical to be left to chance. — Robert Covey",
+        "Human beings want to be good, but not too good, and not quite all the time. — George Orwell",
+        "Reality is a collective hunch. — Lily Tomlin",
+        "There is no doubt that Hegel's philosophy was obscure; the only question is whether it was profound. — Bertrand Russell",
+        "If a man can remain calm amidst all this chaos, he simply doesn't have all the facts. — Anonymous",
+        "We live in an age when unnecessary things are our only necessities. — Oscar Wilde",
+        "Is man merely a mistake of God's? Or God merely a mistake of man? — Friedrich Nietzsche",
+        "When I accept myself just as I am, then I can change. — Carl Rogers",
+        "People who carry notepads to the bedroom or scribble down thoughts during morning constitutionals have tools to abandon self-delusions. Or develop them. — Nolan Yuma"
+    ]
+    return f'Here is a quote: "{WHITE}{UNDERLINE}{BOLD}{random.choice(quote_bag)}{RESET}" :P'
+
+
 def help(timers):
     """
     Provides command help for usage
@@ -263,19 +284,20 @@ ops = {
     "start": (start_timer, 1),
     "stop": (stop_timer, 1),
     "save": (save_timers, 0),
+    "quote": (random_quote, 0)
 }
 
 
-def init_screen():
-    print("\033[s", end="")  # save cursor position
-
-
-def clear_screen():
-    print("\033[u\033[J", end="")  # restore cursor + clear to end of screen
+# def init_screen():
+#     print("\033[s", end="")  # save cursor position
 
 
 # def clear_screen():
-#     print("\033[2J\033[H", end="")
+#     print("\033[u\033[J", end="")  # restore cursor + clear to end of screen
+
+
+def clear_screen():
+    print("\033[2J\033[H", end="")
 
 
 def execute_command(cmd, timers):
@@ -361,7 +383,7 @@ def main():
 
     load_timers()
 
-    init_screen()
+    # init_screen()
     clear_screen()
 
     cmd_history = []
