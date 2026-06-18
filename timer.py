@@ -204,7 +204,7 @@ def save_timers(timers):
     try:
         with open(DEFAULTFILE, "w") as fl:
             json.dump(timers_data, fl)
-        return f"{GREEN}Timers are written to {DEFAULTFILE} sucessfully :){RESET}"
+        return f"{GREEN}Timers are written to {DEFAULTFILE} successfully :){RESET}"
     except Exception as e:
         return f"{RED}Exception: {str(e)} has occurred and couldn't save them :({RESET}"
 
