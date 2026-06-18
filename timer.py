@@ -6,16 +6,19 @@ from datetime import datetime, timedelta
 import time
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event
+import json
+from pathlib import Path
 
 import re
 
-pattern = r'^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$'
+pattern = r"^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$"
 
 mode = "input"
 next_id = 0
 executor = ThreadPoolExecutor()
 
-
+DEFAULTFILE = "./timers.json"
+Path(DEFAULTFILE).touch()
 timers_data = {}
 
 # Reset
@@ -58,13 +61,17 @@ class Timer:
     def notify(self):
         duration = int((self.end - self.start).total_seconds())
 
-        subprocess.run([
-            "notify-send",
-            f"{self.name}",
-            f"Finished\nDuration: {timedelta(seconds=duration)}",
-            "-u", "normal",
-            "-t", "5000"
-        ])
+        subprocess.run(
+            [
+                "notify-send",
+                f"{self.name}",
+                f"Finished\nDuration: {timedelta(seconds=duration)}",
+                "-u",
+                "normal",
+                "-t",
+                "5000",
+            ]
+        )
 
         # subprocess.run([
         #     "spd-say",
@@ -72,14 +79,13 @@ class Timer:
         #     f"Duration {duration // 60} minutes {duration % 60} seconds."
         # ])
 
-
     def timer_ended(self, future):
         try:
             completed = future.result()
             if completed:
                 self.ended = True
                 self.notify()
-                
+
             else:
                 self.timer_cancelled = True
                 return
@@ -129,6 +135,7 @@ def set_timer(timers, h, m, s):
     timers[timer.id] = timer
     return f"{GREEN}Made a new timer ending at {end_time.strftime('%I:%M:%S %p')} :){RESET}"
 
+
 def named_timer(timers, name, timestr):
     """
     Create a timer with a name and a ease-of-use format for time (XhYmZs)
@@ -165,26 +172,46 @@ def start_timer(timers, name):
 
     return f"{GREEN}Timer with name{RESET} {WHITE}{UNDERLINE}{name}{RESET} {GREEN}started{RESET}"
 
-def stop_timer(timers, name):
+
+def stop_timer(timers, inp):
     """
-    Stop a named timer with a name
+    Stop a named timer with a name or id
     """
-    if name not in timers_data:
-        return f"{RED}Timer with name{RESET} {WHITE}{UNDERLINE}{name}{RESET} {RED}not found{RESET}"
+    if not inp.isdigit():
+        if inp not in timers_data:
+            return f"{RED}Timer with name{RESET} {WHITE}{UNDERLINE}{inp}{RESET} {RED}not found{RESET}"
 
-    for timer in timers.values():
-        if timer.name == name and not timer.timer_cancelled and not timer.ended:
-            timer.die()
-            return f"{GREEN}Timer, currently running, with name{RESET} {WHITE}{UNDERLINE}{name}{RESET} {GREEN}stopped{RESET}"
-    
-    return f"{RED}Timer with name{RESET} {WHITE}{UNDERLINE}{name}{RESET} {RED}is not running{RESET}"
+        ids = []
+        for timer in timers.values():
+            if timer.name == inp and not timer.timer_cancelled and not timer.ended:
+                ids.append(timer.id)
+        return f"{GREEN}Timer, with name{RESET} {WHITE}{UNDERLINE}{inp}{RESET} {GREEN}has multiple IDs: {RESET} {WHITE}{UNDERLINE}{ids}{RESET}"
+
+    else:
+        if int(inp) not in timers:
+            return f"{RED}Timer with id {RESET}{WHITE}{UNDERLINE}{inp}{RESET} {RED}not found{RESET}"
+        timer = timers[int(inp)]
+        if timer.timer_cancelled or timer.ended:
+            return f"{RED}Timer with id {RESET}{WHITE}{UNDERLINE}{inp}{RESET} {RED}is not running{RESET}"
+        timer.die()
+        return f"{GREEN}Timer, with id {RESET}{WHITE}{UNDERLINE}{inp}{RESET} {GREEN}is stopped successfully.{RESET}"
 
 
+def save_timers(timers):
+    """
+    Save all timers to the default file
+    """
+    try:
+        with open(DEFAULTFILE, "w") as fl:
+            json.dump(timers_data, fl)
+        return f"{GREEN}Timers are written to {DEFAULTFILE} sucessfully :){RESET}"
+    except Exception as e:
+        return f"{RED}Exception: {str(e)} has occurred and couldn't save them :({RESET}"
 
 
 def clear_timer(timers, n):
     """
-    Removes a timer identified by index as argument
+    Removes a timer identified by index as argument                     
     """
     n = int(n)
 
@@ -233,6 +260,7 @@ ops = {
     "timer": (named_timer, 2),
     "start": (start_timer, 1),
     "stop": (stop_timer, 1),
+    "save": (save_timers, 0),
 }
 
 
@@ -247,7 +275,10 @@ def execute_command(cmd, timers):
         return f"{RED}Unknown command: {main}{RESET}", False
     func, n = ops[main]
     if len(args) != n:
-        return f"{RED}Argument length mismatch, needed {n}, got {len(args)}{RESET}", False
+        return (
+            f"{RED}Argument length mismatch, needed {n}, got {len(args)}{RESET}",
+            False,
+        )
     resp = func(timers, *args)
     return resp, True
 
@@ -283,7 +314,10 @@ def print_info(timers):
         print(f"{CYAN}{ITALIC}mode{RESET}: {mode}")
         print(f"{WHITE}{DIM}TIME NOW - {datetime.now().strftime('%I:%M:%S %p')}{RESET}")
         for timer_id, timer in timers.items():
-            print(f"{WHITE}{BOLD}{timer.name} -{RESET}", timer)
+            print(
+                f"{MAGENTA}{UNDERLINE}ID: #{timer.id}{RESET} {WHITE}{BOLD}{timer.name} -{RESET}",
+                timer,
+            )
         print("---------")
         for name, time_data in timers_data.items():
             h, m, s = time_data
@@ -301,10 +335,21 @@ def handle_ctrl_z(signum, frame):
     raise InterruptedError
 
 
+def load_timers():
+    try:
+        global timers_data
+        with open(DEFAULTFILE) as fl:
+            timers_data = json.load(fl)
+    except:
+        return
+
+
 def main():
     timers = {}
 
     signal.signal(signal.SIGTSTP, handle_ctrl_z)
+
+    load_timers()
 
     clear_screen()
 
