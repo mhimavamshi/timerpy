@@ -11,6 +11,7 @@ A lightweight terminal timer manager with named timers, desktop notifications, s
 * Hear spoken alerts via `spd-say`; But you can modify the notify function to do whatever you want
 * View live timer progress in a dedicated status screen
 * Display a random quote :D
+* Be sisyphus :)
 
 ## Ctrl+Z Signal-Based (SIGTSTP) UI Mode Switching
 
