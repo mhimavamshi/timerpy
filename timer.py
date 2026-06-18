@@ -242,7 +242,7 @@ def random_quote(timers):
         "We live in an age when unnecessary things are our only necessities. — Oscar Wilde",
         "Is man merely a mistake of God's? Or God merely a mistake of man? — Friedrich Nietzsche",
         "When I accept myself just as I am, then I can change. — Carl Rogers",
-        "People who carry notepads to the bedroom or scribble down thoughts during morning constitutionals have tools to abandon self-delusions. Or develop them. — Nolan Yuma"
+        "People who carry notepads to the bedroom or scribble down thoughts during morning constitutionals have tools to abandon self-delusions. Or develop them. — Nolan Yuma",
     ]
     return f'Here is a quote: "{WHITE}{UNDERLINE}{BOLD}{random.choice(quote_bag)}{RESET}" :P'
 
@@ -284,7 +284,7 @@ ops = {
     "start": (start_timer, 1),
     "stop": (stop_timer, 1),
     "save": (save_timers, 0),
-    "quote": (random_quote, 0)
+    "quote": (random_quote, 0),
 }
 
 
