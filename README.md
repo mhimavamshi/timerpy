@@ -12,7 +12,7 @@ A lightweight terminal timer manager with named timers, desktop notifications, s
 * View live timer progress in a dedicated status screen
 * Display a random quote :D
 
-## The cool part
+## Ctrl+Z Signal-Based (SIGTSTP) UI Mode Switching
 
 Press **Ctrl+Z** to instantly switch between:
 
