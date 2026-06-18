@@ -10,6 +10,7 @@ A lightweight terminal timer manager with named timers, desktop notifications, s
 * Get desktop notifications when timers finish
 * Hear spoken alerts via `spd-say`; But you can modify the notify function to do whatever you want
 * View live timer progress in a dedicated status screen
+* Display a random quote :D
 
 ## The cool part
 
@@ -78,6 +79,12 @@ Save named timers:
 
 ```text
 save
+```
+
+Random quote:
+
+```text
+quote
 ```
 
 Show help:
