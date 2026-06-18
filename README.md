@@ -87,7 +87,13 @@ Random quote:
 quote
 ```
 
-Show help:
+Manage Sisyphus counter:
+
+```text
+sisyphus
+```
+
+Show help, for more information than this README:
 
 ```text
 help

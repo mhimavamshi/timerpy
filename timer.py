@@ -35,7 +35,7 @@ GREEN = "\033[32m"
 MAGENTA = "\033[35m"
 CYAN = "\033[36m"
 WHITE = "\033[37m"
-YELLOW = "\033[33m"
+YELLOW = "\033[33m"                                                                                                                                     
 
 # Styles
 BOLD = "\033[1m"
@@ -253,6 +253,9 @@ def random_quote(timers):
 def sisyphus_update(timers):
     """
     Simulates the human condition.
+    Run repeatedly to advance the Sisyphus count.
+    Wait for the running sisyphus timer to finish, to increase the count.
+    Running it too early i.e. before the timer completes, resets all progress/sispyphus count.
     """
     global sisyphus_count
 
