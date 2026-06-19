@@ -327,6 +327,13 @@ def exit(timers):
     executor.shutdown(wait=False)
     sys.exit(0)
 
+def switch_mode(timers):
+    """
+    Switch to timers mode
+    """ 
+    global mode
+    mode = "timers"
+    raise InterruptedError
 
 ops = {
     "set": (set_timer, 3),
@@ -339,6 +346,7 @@ ops = {
     "save": (save_timers, 0),
     "quote": (random_quote, 0),
     "sisyphus": (sisyphus_update, 0),
+    "switch": (switch_mode, 0)
 }
 
 
