@@ -355,7 +355,7 @@ def clear_screen():
 
 
 def execute_command(cmd, timers):
-    words = cmd.split(" ")
+    words = cmd.rstrip().split(" ")
     main, args = words[0], words[1:]
     if main not in ops:
         return f"{RED}Unknown command: {main}{RESET}", False
